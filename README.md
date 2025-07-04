@@ -57,4 +57,4 @@
 ## 📚 문서
 
 - [데이터베이스 설계](docs/DATABASE.md)
-- [API 설계](docs/API.md)
+ - [API 설계](app/backend/docs/API.md)
