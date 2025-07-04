@@ -44,13 +44,46 @@
 
 ## ⚙️ 4. 시작하기 (Getting Started)
 
-이 프로젝트를 로컬 환경에서 실행하는 방법을 기술합니다. (나중에 채워 넣을 부분)
+이 프로젝트를 로컬 환경에서 실행하는 방법을 설명합니다.
 
 ### 전제 조건
 
-- Node.js v18+
-- Docker
-- ...
+- Node.js v18 이상 (LTS 권장)
+- npm 또는 yarn
+- Docker 20+ (선택 사항, 로컬 서버용)
+- Git
+
+
+### 설치
+```bash
+# 저장소 클론
+git clone <repository-url>
+cd minecraft-panel
+
+# 백엔드 의존성 설치
+cd app/backend
+npm install
+
+# 프론트엔드 의존성 설치
+cd ../frontend
+npm install
+```
+
+### 실행 방법
+
+#### 백엔드
+1. `app/backend` 디렉터리에서 `.env` 파일을 생성해 데이터베이스 정보 등을 설정합니다.
+2. 개발 모드를 실행하려면:
+```bash
+npm run start:dev
+```
+
+#### 프론트엔드
+1. `app/frontend` 디렉터리에서 `.env` 파일을 생성하고 `VITE_API_BASE_URL` 등 필요한 값을 입력합니다.
+2. 개발 서버를 실행하려면:
+```bash
+npm run dev
+```
 
 ---
 
