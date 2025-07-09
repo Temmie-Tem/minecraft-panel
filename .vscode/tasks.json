@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Start Discord Bot",
+			"type": "shell",
+			"command": "cd app/discord-bot && npm run dev",
+			"group": "none",
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}
