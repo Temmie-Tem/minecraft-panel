@@ -1,2 +1,9 @@
 # Secret environment variables
 .env
+
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Private infra details
+/docs/.상세인프라.md
