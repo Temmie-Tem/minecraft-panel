@@ -9,7 +9,7 @@ function HomePage() {
       <header className="header">
         <h1>☁️ 사우론 비콘 (Sauron Beacon)</h1>
         <nav>
-          <a href="/" className="login-button">Google로 로그인</a>
+          <a href="/login" className="login-button">Google로 로그인</a>
         </nav>
       </header>
 
