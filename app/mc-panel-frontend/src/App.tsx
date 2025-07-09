@@ -7,8 +7,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 // (아직 파일이 없어서 빨간 줄이 표시되지만, 정상입니다.)
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
-//import Dashboard from './pages/Dashboard'
-//import ServerDetail from './pages/ServerDetail'
+import Dashboard from './pages/Dashboard'
+import ServerDetail from './pages/ServerDetail'
 //import ProtectedRoute from './components/ProtectedRoute' // '경비원' 컴포넌트
 
 function App() {
