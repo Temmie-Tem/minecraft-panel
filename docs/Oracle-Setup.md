@@ -73,3 +73,53 @@ git push
 ---
 
 이제 각자 OS에 맞춰 Instant Client를 설치하고, 백엔드 서비스를 실행하세요!
+
+## 5. 보안 모범 사례
+
+### 5.1 환경변수 관리
+- **절대 금지**: 코드에 비밀정보(DB 비밀번호, API 키 등) 하드코딩
+- **권장 방식**: `.env` 파일과 환경변수 사용
+```bash
+# .env.example 파일 생성 (템플릿용)
+DB_TYPE=oracle
+DB_TNS_ADMIN=<YOUR_TNS_ADMIN_PATH>
+DB_CONNECT_STRING=<YOUR_CONNECT_STRING>
+DB_USER=<YOUR_DB_USER>
+DB_PASS=<YOUR_DB_PASSWORD>
+GOOGLE_CLIENT_ID=<YOUR_GOOGLE_CLIENT_ID>
+GOOGLE_CLIENT_SECRET=<YOUR_GOOGLE_CLIENT_SECRET>
+JWT_SECRET=<YOUR_JWT_SECRET>
+```
+
+### 5.2 Oracle Wallet 보안
+**Windows**:
+```powershell
+# Wallet 디렉터리 권한 제한
+icacls "C:\minecraft-panel\app\backend\Wallet_temmieATP" /inheritance:d
+icacls "C:\minecraft-panel\app\backend\Wallet_temmieATP" /grant:r "%USERNAME%:(OI)(CI)F"
+```
+
+**Linux**:
+```bash
+# Wallet 디렉터리 권한 제한 (소유자만 읽기/쓰기)
+chmod 700 /opt/oracle/Wallet_temmieATP
+chown $USER:$USER /opt/oracle/Wallet_temmieATP
+```
+
+### 5.3 운영 환경 시크릿 관리
+- **개발**: 로컬 `.env` 파일 사용
+- **테스트/운영**: 
+  - AWS Secrets Manager
+  - Azure Key Vault  
+  - Google Secret Manager
+  - Kubernetes Secrets
+  - Docker Swarm Secrets
+
+### 5.4 Git 보안 체크리스트
+- [ ] `.env` 파일이 `.gitignore`에 포함되어 있는가?
+- [ ] Oracle Wallet 파일이 `.gitignore`에 포함되어 있는가?
+- [ ] 코드에 하드코딩된 비밀정보가 없는가?
+- [ ] 커밋 전 `git log --oneline -p` 로 비밀정보 유출 확인
+- [ ] GitHub/GitLab Secret Scanning 활성화
+
+---
