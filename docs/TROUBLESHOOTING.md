@@ -339,3 +339,54 @@ ENV LD_LIBRARY_PATH=/opt/oracle/instantclient_21_3:$LD_LIBRARY_PATH
 5. **대안 마련**: 임시 해결책 준비
 
 ---
+
+## 보안 관련 문제
+
+### 문제: GitHub Push Protection으로 인한 푸시 실패
+
+#### 증상
+```
+remote: error: GH013: Repository rule violations found for refs/heads/main.
+remote: - GITHUB PUSH PROTECTION
+remote: - Push cannot contain secrets
+remote: —— Google OAuth Client ID ————————————————————————————
+remote: —— Google OAuth Client Secret ————————————————————————
+```
+
+#### 원인 분석
+코드나 문서에 하드코딩된 비밀정보(API 키, 비밀번호, 토큰 등)가 포함되어 GitHub의 Secret Scanning에 감지됨
+
+#### ✅ **해결방법 및 예방책**
+
+**1. 즉시 조치**:
+```bash
+# 하드코딩된 시크릿을 플레이스홀더로 교체
+DB_PASS=<YOUR_DB_PASSWORD>
+GOOGLE_CLIENT_ID=<YOUR_GOOGLE_CLIENT_ID>
+GOOGLE_CLIENT_SECRET=<YOUR_GOOGLE_CLIENT_SECRET>
+```
+
+**2. 환경변수 템플릿 사용**:
+```bash
+# .env.example 파일 생성
+cp .env .env.example
+# 실제 값들을 플레이스홀더로 교체 후 커밋
+```
+
+**3. .gitignore 확인**:
+```gitignore
+# 실제 환경변수 파일은 절대 커밋하지 않기
+.env
+.env.local
+.env.production.local
+```
+
+**4. 보안 체크리스트**:
+- [ ] 커밋 전 `git diff` 로 비밀정보 확인
+- [ ] 문서에는 `<YOUR_...>` 형태의 플레이스홀더만 사용
+- [ ] 실제 시크릿은 환경변수나 시크릿 매니저 사용
+- [ ] GitHub Secret Scanning 활성화
+
+**교훈**: 개발 편의를 위해 문서에 실제 값을 적어두면 나중에 보안 문제가 될 수 있음. 처음부터 플레이스홀더를 사용하는 습관이 중요함.
+
+---
