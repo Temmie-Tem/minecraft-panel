@@ -7,3 +7,9 @@ node_modules/
 
 # Private infra details
 /docs/.상세인프라.md
+
+# Monorepo workspace artifacts
+app/*/node_modules/
+app/*/dist/
+app/*/.env
+package-lock.json

@@ -1,0 +1,16 @@
+{
+  "name": "minecraft-panel",
+  "private": true,
+  "workspaces": [
+    "app/*"
+  ],
+  "scripts": {
+    "bootstrap": "npm install",
+    "build": "npm run build --workspaces",
+    "start:frontend": "npm --workspace app/mc-panel-frontend run dev",
+    "start:backend": "npm --workspace app/backend run start:dev",
+    "start:discord": "npm --workspace app/discord-bot run dev",
+    "start:wings": "npm --workspace app/wings run start",
+    "start:all": "npm run start:frontend & npm run start:backend & npm run start:wings & npm run start:discord"
+  }
+}
