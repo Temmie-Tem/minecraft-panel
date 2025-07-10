@@ -14,6 +14,31 @@ Help: https://docs.oracle.com/error-help/db/ora-28759/
 #### 원인 분석
 이 오류는 Oracle 클라이언트가 Wallet 파일(cwallet.sso, ewallet.p12 등)을 찾거나 열 수 없을 때 발생합니다.
 
+#### ✅ **최종 해결방법** (2025.07.10 해결완료)
+
+**핵심 문제**: `sqlnet.ora` 파일의 `WALLET_LOCATION` 경로가 잘못되어 있었음
+
+**해결 과정**:
+1. **sqlnet.ora 파일 수정**:
+```plaintext
+# 문제 있던 설정
+WALLET_LOCATION = (SOURCE = (METHOD = file) (METHOD_DATA = (DIRECTORY="?/network/admin")))
+
+# ✅ 올바른 설정으로 수정
+WALLET_LOCATION = (SOURCE = (METHOD = file) (METHOD_DATA = (DIRECTORY="C:/minecraft-panel/app/backend/Wallet_temmieATP")))
+```
+
+2. **app.module.ts에서 TNS_ADMIN 환경변수 명시적 설정**:
+```typescript
+// TNS_ADMIN 환경변수를 명시적으로 설정 (중요!)
+process.env.TNS_ADMIN = configDir;
+oracledb.initOracleClient({ libDir, configDir });
+```
+
+**검증 결과**: ✅ Oracle DB 연결 성공, TypeORM 정상 작동
+
+---
+
 #### 시도한 해결방법
 
 ##### 1. 경로 설정 문제
@@ -312,3 +337,5 @@ ENV LD_LIBRARY_PATH=/opt/oracle/instantclient_21_3:$LD_LIBRARY_PATH
 3. **단계별 테스트**: 작은 부분부터 확인
 4. **문서 참조**: 공식 문서 및 커뮤니티
 5. **대안 마련**: 임시 해결책 준비
+
+---
