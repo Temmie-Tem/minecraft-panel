@@ -2,10 +2,12 @@
 
 import './LoginPage.css';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const LoginPage = () => {
-  // 나중에 이 함수는 백엔드의 '/api/auth/google' 주소로 이동시킵니다.
+  // 백엔드 주소를 환경변수에서 가져와 로그인 엔드포인트로 이동
   const handleLogin = () => {
-    window.location.href = 'http://[백엔드_서버_주소]/api/auth/google';
+    window.location.href = `${API_BASE_URL}/auth/google`;
   };
 
   return (
