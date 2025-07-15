@@ -12,6 +12,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "dockerode": "^4.0.7",
     "express": "^5.1.0"
   }
 }
