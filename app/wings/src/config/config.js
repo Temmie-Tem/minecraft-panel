@@ -50,7 +50,8 @@ const config = {
   // 경로 설정
   paths: {
     dataMountPath: process.env.DATA_MOUNT_PATH || '/data',
-    serverDataBasePath: process.env.SERVER_DATA_BASE_PATH || '/home/temmie/minecraft_server'
+    serverDataBasePath: process.env.SERVER_DATA_BASE_PATH || '/home/temmie/minecraft_server',
+    serverData: process.env.SERVER_DATA_PATH || '/home/temmie/minecraft_server'
   },
 
   // API 설정

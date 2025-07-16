@@ -18,10 +18,28 @@ const hasServer = (serverId) => {
   return servers.has(serverId);
 };
 
+// Claude 추가: 서버 삭제 함수
+const deleteServer = (serverId) => {
+  return servers.delete(serverId);
+};
+
+// Claude 추가: 서버 업데이트 함수
+const updateServer = (serverId, updates) => {
+  const server = servers.get(serverId);
+  if (server) {
+    const updatedServer = { ...server, ...updates, updatedAt: new Date().toISOString() };
+    servers.set(serverId, updatedServer);
+    return updatedServer;
+  }
+  return null;
+};
+
 module.exports = {
   addServer,
   getServer,
   getAllServers,
   hasServer,
+  deleteServer,
+  updateServer,
 };
 // Claude: 향후 Redis나 PostgreSQL 연동으로 확장 가능

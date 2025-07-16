@@ -30,7 +30,8 @@ const createServer = asyncErrorHandler(async (req, res) => {
     cpus = config.minecraft.defaultCpu, 
     port = config.minecraft.defaultPort, 
     hostPath,
-    environment = {} 
+    environment = {}, 
+    dockerImage = config.docker.image  // optional Docker image override
   } = req.body;
   
   validateRequiredFields({ name, hostPath }, ['name', 'hostPath']);
@@ -41,7 +42,7 @@ const createServer = asyncErrorHandler(async (req, res) => {
     throw createResourceConflictError('Server ID conflict, please try again.');
   }
 
-  const serverConfig = { name, serverType, version, memory, cpus, port, hostPath, environment, serverId };
+  const serverConfig = { name, serverType, version, memory, cpus, port, hostPath, environment, dockerImage, serverId };
   validateServerConfig(serverConfig);
 
   const container = await dockerService.createServerContainer(serverConfig);
@@ -159,6 +160,100 @@ const getServerResources = (req, res) => {
     res.status(501).json({ message: 'Not Implemented' });
 };
 
+// Claude 추가: 서버 삭제 API
+const deleteServer = asyncErrorHandler(async (req, res) => {
+  const { serverId } = req.params;
+  const { removeData = false, force = false } = req.body;
+  
+  const server = serverStore.getServer(serverId);
+  
+  if (!server) {
+    throw createServerNotFoundError(serverId);
+  }
+
+  try {
+    // 1. 컨테이너 상태 확인 및 중지
+    logServerAction('delete', serverId, 'starting_deletion', { removeData, force });
+    
+    let containerStatus = 'not_found';
+    try {
+      const status = await dockerService.getContainerStatus(server.containerId);
+      containerStatus = status.status;
+      
+      if (status.running && !force) {
+        // 실행 중인 서버는 force 옵션 없이는 삭제 불가
+        return badRequestResponse(res, 'Server is running. Stop the server first or use force option.');
+      }
+    } catch (error) {
+      // 컨테이너가 이미 없는 경우는 계속 진행
+      logServerAction('delete', serverId, 'container_not_found', { error: error.message });
+    }
+
+    // 2. 컨테이너 제거
+    const removeResult = await dockerService.removeContainer(server.containerId, {
+      force: force,
+      removeVolumes: false  // 데이터 보존을 위해 볼륨은 별도 처리
+    });
+
+    // 3. 서버 데이터 정리 (옵션)
+    if (removeData && server.hostPath) {
+      const fs = require('fs');
+      const path = require('path');
+      
+      try {
+        if (fs.existsSync(server.hostPath)) {
+          // 안전한 경로인지 확인 (보안상 중요)
+          const serverDataPath = path.resolve(path.normalize(server.hostPath));
+          const configDataPath = path.resolve(config.paths.serverData || '/minecraft-servers');
+          
+          // 정규화된 경로가 설정된 경로 내부에 있는지 확인
+          if (serverDataPath.startsWith(configDataPath) && 
+              !serverDataPath.includes('..') && 
+              serverDataPath !== configDataPath) {
+            fs.rmSync(serverDataPath, { recursive: true, force: true });
+            logServerAction('delete', serverId, 'data_removed', { path: serverDataPath });
+          } else {
+            logServerError('delete', serverId, 'unsafe_path', { path: serverDataPath });
+          }
+        }
+      } catch (fsError) {
+        logServerError('delete', serverId, 'data_removal_failed', { error: fsError.message });
+        // 데이터 삭제 실패는 전체 삭제를 중단시키지 않음
+      }
+    }
+
+    // 4. 메모리에서 서버 정보 제거
+    const deleted = serverStore.deleteServer(serverId);
+    
+    if (!deleted) {
+      logServerError('delete', serverId, 'store_deletion_failed');
+    }
+
+    // 5. WebSocket 연결 정리 (있다면)
+    // WebSocket 서비스에서 해당 서버의 연결들을 정리
+    
+    logServerAction('delete', serverId, 'completed', {
+      containerRemoved: removeResult.status,
+      dataRemoved: removeData,
+      force: force
+    });
+
+    return successResponse(res, {
+      serverId,
+      message: 'Server deleted successfully',
+      details: {
+        containerStatus: removeResult.status,
+        dataRemoved: removeData,
+        force: force
+      }
+    });
+
+  } catch (error) {
+    logServerError('delete', serverId, 'deletion_failed', { error: error.message });
+    throw createDockerError(`Failed to delete server: ${error.message}`, serverId, error);
+  }
+});
+
 module.exports = {
   createServer,
   getAllServers,
@@ -170,4 +265,5 @@ module.exports = {
   sendCommand,
   updateServerResources,
   getServerResources,
+  deleteServer,
 };

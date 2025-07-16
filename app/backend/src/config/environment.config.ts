@@ -24,6 +24,9 @@ export const configValidationSchema = Joi.object({
   // Frontend & CORS
   FRONTEND_URL: Joi.string().uri().default('http://localhost:5173'),
   CORS_ALLOWED_ORIGINS: Joi.string().default('http://localhost:5173,http://127.0.0.1:5173'),
+  
+  // Wings API
+  WINGS_API_URL: Joi.string().uri().default('http://localhost:8080'),
 });
 
 export const databaseConfig = () => ({
@@ -51,4 +54,8 @@ export const appConfig = () => ({
   port: parseInt(process.env.PORT || '3001', 10),
   frontendUrl: process.env.FRONTEND_URL,
   isProduction: process.env.NODE_ENV === 'production',
+});
+
+export const wingsConfig = () => ({
+  apiUrl: process.env.WINGS_API_URL,
 });

@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { WingsModule } from './wings/wings.module';
 import * as oracledb from 'oracledb';
 import * as path from 'path';
 import { User } from './users/user.entity';
@@ -87,6 +88,7 @@ const initializeOracleClient = (configService: ConfigService) => {
       inject: [ConfigService],
     }),
     AuthModule,
+    WingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -8,7 +8,8 @@ const { logInfo, logError } = require('./utils/loggerUtils'); // Gemini: logInfo
 const config = require('./config/config'); // Gemini: config import 추가
 
 const app = express();
-const port = 8080;
+// config에서 포트 설정 사용
+const port = config.server.port;
 
 app.use(express.json());
 

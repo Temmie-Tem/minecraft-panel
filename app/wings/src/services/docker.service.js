@@ -11,7 +11,7 @@ const { createDockerError, createServiceUnavailableError } = require('../utils/e
 const docker = new Docker();
 
 const createServerContainer = async (serverConfig) => {
-  const { serverId, name, serverType, version, memory, cpus, port, hostPath, environment } = serverConfig;
+const { serverId, name, serverType, version, memory, cpus, port, hostPath, environment, dockerImage } = serverConfig;
 
   const dataPath = hostPath || generateServerDataPath(serverId);
   
@@ -28,7 +28,7 @@ const createServerContainer = async (serverConfig) => {
   };
 
   const containerConfig = {
-    Image: config.docker.image,
+    Image: dockerImage || config.docker.image,
     name: generateContainerName(serverId),
     HostConfig: {
       Memory: parseMemoryToBytes(memory),
@@ -208,12 +208,76 @@ const restartContainer = async (containerId) => {
   }
 };
 
+// Claude 추가: 컨테이너 제거 함수
+const removeContainer = async (containerId, options = {}) => {
+  try {
+    const container = docker.getContainer(containerId);
+    
+    // 컨테이너가 실행 중이면 먼저 중지
+    try {
+      const containerInfo = await container.inspect();
+      if (containerInfo.State.Running) {
+        logInfo(`Stopping container ${containerId} before removal`);
+        await container.stop({ t: 10 }); // 10초 대기 후 강제 종료
+      }
+    } catch (inspectError) {
+      // 컨테이너가 이미 존재하지 않는 경우 무시
+      if (inspectError.statusCode === 404) {
+        logInfo(`Container ${containerId} not found, skipping removal`);
+        return { success: true, status: 'not_found' };
+      }
+    }
+
+    // 컨테이너 제거 (볼륨도 함께 제거할지 옵션으로 결정)
+    await container.remove({
+      force: options.force || true,  // 강제 제거
+      v: options.removeVolumes || false  // 볼륨 제거 여부
+    });
+
+    logDockerAction('remove', containerId, { 
+      force: options.force, 
+      removeVolumes: options.removeVolumes 
+    });
+    
+    return { success: true, status: 'removed' };
+  } catch (error) {
+    if (error.statusCode === 404) {
+      return { success: true, status: 'not_found' };
+    }
+    throw createDockerError(`Failed to remove container: ${error.message}`, containerId, error);
+  }
+};
+
+// Claude 추가: 컨테이너 정보 조회 함수
+const getContainerInfo = async (containerId) => {
+  try {
+    const container = docker.getContainer(containerId);
+    const info = await container.inspect();
+    return {
+      id: info.Id,
+      name: info.Name,
+      image: info.Config.Image,
+      created: info.Created,
+      state: info.State,
+      networkSettings: info.NetworkSettings,
+      mounts: info.Mounts
+    };
+  } catch (error) {
+    if (error.statusCode === 404) {
+      throw new Error('Container not found');
+    }
+    throw createDockerError(`Failed to get container info: ${error.message}`, containerId, error);
+  }
+};
+
 module.exports = {
   createServerContainer,
   pingDocker,
   streamContainerLogs,
   getContainerStatus,
+  getContainerInfo,
   startContainer,
   stopContainer,
   restartContainer,
+  removeContainer,
 };

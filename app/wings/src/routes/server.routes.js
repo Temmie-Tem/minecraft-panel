@@ -8,6 +8,7 @@ const serverController = require('../controllers/server.controller');
 router.post('/', serverController.createServer);
 router.get('/', serverController.getAllServers);
 router.get('/:serverId', serverController.getServerById);
+router.delete('/:serverId', serverController.deleteServer);  // Claude 추가: DELETE API
 
 // Claude 추가: 서버 제어 라우트
 router.post('/:serverId/start', serverController.startServer);

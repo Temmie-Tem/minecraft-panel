@@ -1,19 +1,19 @@
-// apps/backend/src/app.controller.ts
 import { Controller, Get } from '@nestjs/common';
-import axios from 'axios';
 import { Connection } from 'typeorm';
+import { WingsService } from './wings/wings.service'; // WingsService import
 import { User } from './users/user.entity';
 
 @Controller()
 export class AppController {
-  constructor(private readonly connection: Connection) {}
+  constructor(
+    private readonly connection: Connection,
+    private readonly wingsService: WingsService, // WingsService 주입
+  ) {}
 
   @Get('/ping-wings')
   async pingWings() {
     try {
-      // 로컬 테스트용 - localhost 사용
-      const response = await axios.get('http://localhost:8080/ping');
-      return response.data;
+      return await this.wingsService.ping();
     } catch (error) {
       return { error: 'Wings에 연결할 수 없습니다.', details: error.message };
     }
