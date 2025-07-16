@@ -12,5 +12,8 @@
     "start:discord": "npm --workspace app/discord-bot run dev",
     "start:wings": "npm --workspace app/wings run start",
     "start:all": "npm run start:frontend & npm run start:backend & npm run start:wings & npm run start:discord"
+  },
+  "dependencies": {
+    "ssh-mcp": "^1.0.7"
   }
 }
