@@ -1,0 +1,170 @@
+{
+  "timestamp": "2025-07-17T01:00:00.916Z",
+  "wingsVersion": "1.0.0",
+  "containers": [
+    {
+      "serverId": "defaultenvtest-4597431b",
+      "containerId": "9a24c4659efc",
+      "status": "created",
+      "createdAt": "2025-07-17 02:44:42 +0900 KST",
+      "image": "itzg/minecraft-server"
+    },
+    {
+      "serverId": "envtestserver-ce7b0d21",
+      "containerId": "015b113dd753",
+      "status": "exited",
+      "createdAt": "2025-07-17 02:42:44 +0900 KST",
+      "image": "itzg/minecraft-server"
+    },
+    {
+      "serverId": "flexible-image-test-2546479e",
+      "containerId": "10430f325b3d",
+      "status": "created",
+      "createdAt": "2025-07-17 02:24:45 +0900 KST",
+      "image": "45440bd8e0ab"
+    },
+    {
+      "serverId": "concurrenttest4-8471b000",
+      "containerId": "8a9f634573bb",
+      "status": "created",
+      "createdAt": "2025-07-16 15:56:20 +0900 KST",
+      "image": "45440bd8e0ab"
+    },
+    {
+      "serverId": "concurrenttest1-8d5a6f88",
+      "containerId": "177a4e7396cd",
+      "status": "created",
+      "createdAt": "2025-07-16 15:56:20 +0900 KST",
+      "image": "45440bd8e0ab"
+    },
+    {
+      "serverId": "concurrenttest3-9e941009",
+      "containerId": "10504d29729a",
+      "status": "created",
+      "createdAt": "2025-07-16 15:56:20 +0900 KST",
+      "image": "45440bd8e0ab"
+    },
+    {
+      "serverId": "concurrenttest2-6ab7dc2d",
+      "containerId": "f2f3eac1687d",
+      "status": "created",
+      "createdAt": "2025-07-16 15:56:20 +0900 KST",
+      "image": "45440bd8e0ab"
+    },
+    {
+      "serverId": "concurrenttest5-bac82d63",
+      "containerId": "e4a9f1268601",
+      "status": "created",
+      "createdAt": "2025-07-16 15:56:20 +0900 KST",
+      "image": "45440bd8e0ab"
+    },
+    {
+      "serverId": "testserver2-d21b74ca",
+      "containerId": "c89fa3dd626a",
+      "status": "created",
+      "createdAt": "2025-07-16 15:52:43 +0900 KST",
+      "image": "45440bd8e0ab"
+    },
+    {
+      "serverId": "testserver1-71b6c768",
+      "containerId": "490a390ae25d",
+      "status": "exited",
+      "createdAt": "2025-07-16 15:51:32 +0900 KST",
+      "image": "45440bd8e0ab"
+    },
+    {
+      "serverId": "test-server-2",
+      "containerId": "96c6df5e1252",
+      "status": "exited",
+      "createdAt": "2025-07-03 15:09:56 +0900 KST",
+      "image": "45440bd8e0ab"
+    }
+  ],
+  "directories": [
+    {
+      "name": "Create",
+      "path": "/home/temmie/minecraft_server/Create",
+      "hasServerProperties": true
+    },
+    {
+      "name": "RL",
+      "path": "/home/temmie/minecraft_server/RL",
+      "hasServerProperties": true
+    },
+    {
+      "name": "concurrent1",
+      "path": "/home/temmie/minecraft_server/concurrent1",
+      "hasServerProperties": false
+    },
+    {
+      "name": "concurrent2",
+      "path": "/home/temmie/minecraft_server/concurrent2",
+      "hasServerProperties": false
+    },
+    {
+      "name": "concurrent3",
+      "path": "/home/temmie/minecraft_server/concurrent3",
+      "hasServerProperties": false
+    },
+    {
+      "name": "concurrent4",
+      "path": "/home/temmie/minecraft_server/concurrent4",
+      "hasServerProperties": false
+    },
+    {
+      "name": "concurrent5",
+      "path": "/home/temmie/minecraft_server/concurrent5",
+      "hasServerProperties": false
+    },
+    {
+      "name": "cryptid_mine",
+      "path": "/home/temmie/minecraft_server/cryptid_mine",
+      "hasServerProperties": true
+    },
+    {
+      "name": "custom-image-test",
+      "path": "/home/temmie/minecraft_server/custom-image-test",
+      "hasServerProperties": false
+    },
+    {
+      "name": "deceasedCraft",
+      "path": "/home/temmie/minecraft_server/deceasedCraft",
+      "hasServerProperties": true
+    },
+    {
+      "name": "default-env-test",
+      "path": "/home/temmie/minecraft_server/default-env-test",
+      "hasServerProperties": false
+    },
+    {
+      "name": "env-test-server",
+      "path": "/home/temmie/minecraft_server/env-test-server",
+      "hasServerProperties": true
+    },
+    {
+      "name": "flexible-image-test",
+      "path": "/home/temmie/minecraft_server/flexible-image-test",
+      "hasServerProperties": false
+    },
+    {
+      "name": "test1",
+      "path": "/home/temmie/minecraft_server/test1",
+      "hasServerProperties": true
+    },
+    {
+      "name": "test2",
+      "path": "/home/temmie/minecraft_server/test2",
+      "hasServerProperties": false
+    },
+    {
+      "name": "testmine",
+      "path": "/home/temmie/minecraft_server/testmine",
+      "hasServerProperties": true
+    }
+  ],
+  "summary": {
+    "totalContainers": 11,
+    "totalDirectories": 16,
+    "runningContainers": 0
+  }
+}
