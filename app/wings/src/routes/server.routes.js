@@ -3,6 +3,10 @@
 const express = require('express');
 const router = express.Router();
 const serverController = require('../controllers/server.controller');
+const authMiddleware = require('../middleware/auth.middleware');
+
+// 모든 API 엔드포인트에 인증 미들웨어 적용
+router.use(authMiddleware);
 
 // 서버 CRUD
 router.post('/', serverController.createServer);

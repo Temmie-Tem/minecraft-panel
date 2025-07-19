@@ -27,6 +27,7 @@ export const configValidationSchema = Joi.object({
   
   // Wings API
   WINGS_API_URL: Joi.string().uri().default('http://localhost:8080'),
+  INTERNAL_API_KEY: Joi.string().min(32).required(),
 });
 
 export const databaseConfig = () => ({
@@ -58,4 +59,5 @@ export const appConfig = () => ({
 
 export const wingsConfig = () => ({
   apiUrl: process.env.WINGS_API_URL,
+  internalApiKey: process.env.INTERNAL_API_KEY,
 });

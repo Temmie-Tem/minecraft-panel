@@ -8,22 +8,42 @@ import { ServerInfo, ServerActionResponse, ServerDeleteResponse, ServerDeleteOpt
 export class WingsService {
   private readonly logger = new Logger(WingsService.name);
   private readonly wingsApiUrl: string;
+  private readonly internalApiKey: string;
 
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {
     this.wingsApiUrl = this.configService.get<string>('WINGS_API_URL') || 'http://localhost:8080';
+    this.internalApiKey = this.configService.get<string>('INTERNAL_API_KEY');
+    
+    if (!this.internalApiKey) {
+      this.logger.warn('INTERNAL_API_KEY is not configured. Wings API calls may fail due to authentication.');
+    }
   }
 
   private getApiUrl(serverId: string, path: string = ''): string {
     return `${this.wingsApiUrl}/api/v1/servers/${serverId}${path}`;
   }
 
+  private getAuthHeaders() {
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+    };
+
+    if (this.internalApiKey) {
+      headers['Authorization'] = `Bearer ${this.internalApiKey}`;
+    }
+
+    return headers;
+  }
+
   async getServerInfo(serverId: string): Promise<ServerInfo> {
     try {
       const response = await firstValueFrom(
-        this.httpService.get(this.getApiUrl(serverId)),
+        this.httpService.get(this.getApiUrl(serverId), {
+          headers: this.getAuthHeaders(),
+        }),
       );
       return response.data;
     } catch (error) {
@@ -35,7 +55,9 @@ export class WingsService {
   async startServer(serverId: string): Promise<ServerActionResponse> {
     try {
       const response = await firstValueFrom(
-        this.httpService.post(this.getApiUrl(serverId, '/start')),
+        this.httpService.post(this.getApiUrl(serverId, '/start'), {}, {
+          headers: this.getAuthHeaders(),
+        }),
       );
       return response.data;
     } catch (error) {
@@ -47,7 +69,9 @@ export class WingsService {
   async stopServer(serverId: string): Promise<ServerActionResponse> {
     try {
       const response = await firstValueFrom(
-        this.httpService.post(this.getApiUrl(serverId, '/stop')),
+        this.httpService.post(this.getApiUrl(serverId, '/stop'), {}, {
+          headers: this.getAuthHeaders(),
+        }),
       );
       return response.data;
     } catch (error) {
@@ -65,7 +89,9 @@ export class WingsService {
       const url = this.getApiUrl(serverId) + (queryParams.toString() ? `?${queryParams.toString()}` : '');
       
       const response = await firstValueFrom(
-        this.httpService.delete(url),
+        this.httpService.delete(url, {
+          headers: this.getAuthHeaders(),
+        }),
       );
       
       this.logger.log(`Successfully deleted server ${serverId}`, { 
@@ -83,7 +109,9 @@ export class WingsService {
   async ping(): Promise<{ status: string }> {
     try {
       const response = await firstValueFrom(
-        this.httpService.get(`${this.wingsApiUrl}/ping`),
+        this.httpService.get(`${this.wingsApiUrl}/ping`, {
+          headers: this.getAuthHeaders(),
+        }),
       );
       return response.data;
     } catch (error) {

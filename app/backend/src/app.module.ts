@@ -7,8 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { WingsModule } from './wings/wings.module';
 import * as oracledb from 'oracledb';
 import * as path from 'path';
-import { User } from './users/user.entity';
-import { configValidationSchema, databaseConfig, jwtConfig, googleConfig, appConfig } from './config/environment.config';
+import * as entities from './entities';
+import { configValidationSchema, databaseConfig, jwtConfig, googleConfig, appConfig, wingsConfig } from './config/environment.config';
 
 // Oracle 클라이언트 초기화 함수
 const initializeOracleClient = (configService: ConfigService) => {
@@ -46,7 +46,7 @@ const initializeOracleClient = (configService: ConfigService) => {
     ConfigModule.forRoot({
       isGlobal: true,
       validationSchema: configValidationSchema,
-      load: [databaseConfig, jwtConfig, googleConfig, appConfig],
+      load: [databaseConfig, jwtConfig, googleConfig, appConfig, wingsConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -77,8 +77,11 @@ const initializeOracleClient = (configService: ConfigService) => {
                 connectTimeout: 60000,
                 requestTimeout: 30000,
               }),
-          entities: [User],
-          // In development, drop schema and synchronize to recreate tables from entities
+          entities: Object.values(entities),
+          migrations: ['dist/database/migrations/*.js'],
+          migrationsTableName: 'typeorm_migrations',
+          migrationsRun: isProduction, // 프로덕션에서는 자동으로 마이그레이션 실행
+          // 개발환경에서만 동기화 사용 (프로덕션에서는 마이그레이션 사용)
           dropSchema: !isProduction,
           synchronize: !isProduction,
           retryAttempts: 3,

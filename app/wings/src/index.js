@@ -3,6 +3,7 @@ const express = require('express');
 const http = require('http');
 const serverRoutes = require('./routes/server.routes');
 const { pingDocker } = require('./services/docker.service');
+const redisService = require('./services/redis.service');
 const websocketManager = require('./websocket/websocket');
 const { logInfo, logError } = require('./utils/loggerUtils'); // Gemini: logInfo, logError import 추가
 const config = require('./config/config'); // Gemini: config import 추가
@@ -13,7 +14,10 @@ const port = config.server.port;
 
 app.use(express.json());
 
-app.get('/ping', (req, res) => {
+// 인증이 필요한 엔드포인트들
+const authMiddleware = require('./middleware/auth.middleware');
+
+app.get('/ping', authMiddleware, (req, res) => {
   console.log("Panel로부터 'ping' 요청 수신!");
   res.json({ message: 'pong from wings' });
 });
@@ -37,6 +41,15 @@ const startServer = async () => {
 
   logInfo('Docker daemon connection successful');
   
+  // Redis 연결 시도 (실패해도 계속 진행 - 폴백 스토어 사용)
+  logInfo('Connecting to Redis...');
+  const redisConnected = await redisService.connect();
+  if (redisConnected) {
+    logInfo('Redis connection successful');
+  } else {
+    logError('Redis connection failed - using fallback in-memory store');
+  }
+  
   // Claude 추가: HTTP 서버 생성 및 WebSocket 서버 초기화
   const server = http.createServer(app);
   websocketManager.init(server);
@@ -46,9 +59,10 @@ const startServer = async () => {
     logInfo(`WebSocket server is available at ws://localhost:${config.server.port}${config.websocket.path}`);
   });
 
-  process.on('SIGINT', () => {
+  process.on('SIGINT', async () => {
     logInfo('Shutting down server...');
     websocketManager.cleanup();
+    await redisService.disconnect();
     process.exit(0);
   });
 };

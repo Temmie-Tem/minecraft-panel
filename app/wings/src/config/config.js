@@ -57,6 +57,12 @@ const config = {
   // API 설정
   api: {
     basePath: process.env.API_BASE_PATH || '/api/v1'
+  },
+
+  // 내부 서비스 인증 설정
+  auth: {
+    internalApiKey: process.env.INTERNAL_API_KEY,
+    panelUrl: process.env.PANEL_URL || 'http://localhost:3001'
   }
 };
 
