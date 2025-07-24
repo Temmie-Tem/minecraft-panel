@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { Connection } from 'typeorm';
 import { WingsService } from './wings/wings.service'; // WingsService import
-import { User } from './users/user.entity';
+import { User } from './entities/user.entity';
 
 @Controller()
 export class AppController {

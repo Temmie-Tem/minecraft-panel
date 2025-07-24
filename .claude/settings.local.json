@@ -7,8 +7,19 @@
       "Bash(mkdir:*)",
       "Bash(mv:*)",
       "Bash(rm:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "mcp__sqlcl__list-connections",
+      "mcp__sqlcl__connect",
+      "mcp__sqlcl__run-sql",
+      "mcp__sqlcl__run-sqlcl",
+      "mcp__ssh-mcp__exec"
     ],
     "deny": []
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "serena",
+    "ssh-mcp",
+    "sqlcl"
+  ]
 }

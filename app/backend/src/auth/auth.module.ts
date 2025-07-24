@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { GoogleStrategy } from './google.strategy';
 import { JwtStrategy } from './jwt.strategy';
-import { User } from '../users/user.entity';
+import { User } from '../entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
