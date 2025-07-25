@@ -48,6 +48,13 @@ coverage/
 
 # IDE files
 .vscode/
+
+# MCP configuration files (contains passwords and sensitive info)
+.mcp.json
+
+# Temporary files
+temp-*.js
+.agent.md
 .idea/
 *.swp
 *.swo
