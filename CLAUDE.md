@@ -42,6 +42,13 @@ npm run lint             # ESLint
 npm run preview          # Preview production build
 ```
 
+### Discord Bot-specific commands (from app/discord-bot/)
+```bash
+npm run start            # Start Discord bot
+npm run dev              # Development with auto-restart
+npm run build            # TypeScript compilation
+```
+
 ## Architecture Overview
 
 This is a **3-tier hybrid cloud Minecraft server management panel** with the following components:
@@ -50,7 +57,7 @@ This is a **3-tier hybrid cloud Minecraft server management panel** with the fol
 - **Panel Backend** (`app/backend/`): NestJS API server with OAuth authentication, database management, and Wings integration
 - **Panel Frontend** (`app/mc-panel-frontend/`): React + Vite dashboard for server management  
 - **Wings Daemon** (`app/wings/`): Node.js service that manages Docker-based Minecraft servers on local hardware
-- **Discord Bot** (`app/discord-bot/`): Optional Discord integration service
+- **Discord Bot** (`app/discord-bot/`): Discord bot with API integration for server management via chat commands
 
 ### Database Design
 - **Primary DB**: Oracle Cloud ATP (Always Free tier) for production
@@ -66,6 +73,7 @@ This is a **3-tier hybrid cloud Minecraft server management panel** with the fol
 
 ### Key Integration Points
 - **Wings API**: RESTful API for Docker container management on remote nodes
+- **Discord Bot API**: HTTP client integration with backend for Discord-based server management
 - **Oracle Instant Client**: Windows-compatible Oracle client libraries in `app/backend/OracleDB/`
 - **Oracle Wallet**: Database connection credentials in `app/backend/Wallet_temmieATP/`
 
@@ -96,12 +104,23 @@ FRONTEND_URL=http://localhost:5173
 CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
 ```
 
+### Discord Bot Configuration
+
+The Discord bot requires these environment variables:
+
+```bash
+# Discord Bot
+DISCORD_TOKEN=                        # Discord bot token from Discord Developer Portal
+BACKEND_URL=http://localhost:3000     # Backend API URL for integration
+```
+
 ## Development Workflow
 
 1. **Database Setup**: The backend automatically initializes Oracle client libraries and handles schema sync in development mode
 2. **Wings Integration**: Wings daemon manages Minecraft servers via Docker, communicating with Panel through REST APIs
-3. **Local Development**: Uses SQLite by default; set `DB_TYPE=oracle` for Oracle testing
-4. **Production**: Designed for Oracle Cloud VM with ATP database and local Wings nodes
+3. **Discord Bot Integration**: Bot communicates with backend API for server management via Discord commands
+4. **Local Development**: Uses SQLite by default; set `DB_TYPE=oracle` for Oracle testing
+5. **Production**: Designed for Oracle Cloud VM with ATP database and local Wings nodes
 
 ## Key Code Patterns
 
@@ -109,3 +128,16 @@ CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
 - **NestJS Modules**: Auth, Wings, and core app modules with dependency injection
 - **Environment Validation**: Joi schemas in `config/environment.config.ts` for runtime validation
 - **Wings Communication**: HTTP client for Docker container lifecycle management
+- **Discord Bot Commands**: Chat commands with axios HTTP client for backend API integration
+
+## Discord Bot Commands
+
+Available Discord commands for server management:
+
+- `!ping` - Basic bot response test
+- `!health` - Check database connection status
+- `!wings` - Check Wings service status
+- `!server <ID>` - Get server information
+- `!start <ID>` - Start a server
+- `!stop <ID>` - Stop a server
+- `!users` - Show registered user count

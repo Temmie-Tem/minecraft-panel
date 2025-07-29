@@ -1,0 +1,18 @@
+# Wings 개발용 Dockerfile
+FROM node:18-alpine
+
+# Docker CLI 설치 (Wings가 Docker를 제어하기 위해)
+RUN apk add --no-cache docker
+
+WORKDIR /app
+
+# package.json 복사 및 의존성 설치
+COPY package*.json ./
+RUN npm install
+
+# 소스 코드 복사
+COPY . .
+
+# Wings 서버 실행
+EXPOSE 8080
+CMD ["npm", "run", "start"]

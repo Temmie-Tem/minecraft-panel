@@ -11,7 +11,10 @@
     "start:backend": "npm --workspace app/backend run start:dev",
     "start:discord": "npm --workspace app/discord-bot run dev",
     "start:wings": "npm --workspace app/wings run start",
-    "start:all": "npm run start:frontend & npm run start:backend & npm run start:wings & npm run start:discord"
+    "start:all": "npm run start:frontend & npm run start:backend & npm run start:wings & npm run start:discord",
+    "test:start": "powershell -ExecutionPolicy Bypass -File ./scripts/start-test.ps1",
+    "test:stop": "powershell -ExecutionPolicy Bypass -File ./scripts/stop-test.ps1",
+    "test:local": "npm run start:all"
   },
   "dependencies": {
     "ssh-mcp": "^1.0.7"

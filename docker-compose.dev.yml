@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # 백엔드 API 서버
+  backend:
+    build:
+      context: ./app/backend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - DB_TYPE=sqlite
+      - DB_DATABASE=/app/data/dev.sqlite
+      - JWT_SECRET=development_jwt_secret_key_32chars_minimum_required_here
+      - WINGS_API_URL=http://wings:8080
+    volumes:
+      - ./app/backend:/app
+      - backend_data:/app/data
+      - /app/node_modules
+    depends_on:
+      - wings
+    command: npm run start:dev
+
+  # Wings 서버 (Minecraft 서버 관리)
+  wings:
+    build:
+      context: ./app/wings
+      dockerfile: Dockerfile.dev
+    ports:
+      - "8080:8080"
+    environment:
+      - NODE_ENV=development
+      - PANEL_API_URL=http://backend:3001
+    volumes:
+      - ./app/wings:/app
+      - /var/run/docker.sock:/var/run/docker.sock
+      - wings_data:/app/data
+      - /app/node_modules
+    command: npm run start
+
+  # 프론트엔드 (개발 서버)
+  frontend:
+    build:
+      context: ./app/mc-panel-frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:3001
+    volumes:
+      - ./app/mc-panel-frontend:/app
+      - /app/node_modules
+    command: npm run dev
+
+  # Discord 봇 (선택사항)
+  discord-bot:
+    build:
+      context: ./app/discord-bot
+      dockerfile: Dockerfile.dev
+    environment:
+      - NODE_ENV=development
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - BACKEND_API_URL=http://backend:3001
+    volumes:
+      - ./app/discord-bot:/app
+      - /app/node_modules
+    command: npm run dev
+
+volumes:
+  backend_data:
+  wings_data:
